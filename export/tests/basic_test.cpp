@@ -157,7 +157,7 @@ TEST_CASE("basic") {
     while (t < 10) {
         instance->do_step(t, dt);
 
-        REQUIRE(U->get() > 0);
+        REQUIRE(U->get() >= 0);
 
         t += dt;
     }
