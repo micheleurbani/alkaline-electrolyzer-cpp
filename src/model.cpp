@@ -69,7 +69,7 @@ public:
                 "I", [this] { return I_; }, [this](double value) { I_ = value; })
                 .setCausality(causality_t::INPUT)
                 .setVariability(variability_t::CONTINUOUS)
-                .setInitial(initial_t::EXACT));
+                .setInitial(initial_t::APPROX));
 
         register_variable(
             real(
