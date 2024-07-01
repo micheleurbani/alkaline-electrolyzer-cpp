@@ -164,7 +164,7 @@ TEST_CASE("basic") {
 
     instance->reset();
 
-    REQUIRE(I->get() != 0);
+    REQUIRE(I->get() == 0);
 
     instance->terminate();
 }
