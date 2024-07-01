@@ -90,10 +90,11 @@ public:
         double Urev = get_real_variable("Urev")->get();
         double Tel = get_real_variable("Tel")->get();
         double s = get_real_variable("s")->get();
+        double I = get_real_variable("I")->get();
 
-        double I = currentTime * 6;
         double U = Urev + (r1 + r2 * Tel) / Acell * I + s * std::log((t1 + t2 / Tel + t3 / std::pow(Tel, 2)) / Acell * I + 1);
         std::cout << "U: " << U << std::endl;
+        get_real_variable("U")->set(U);
         return true;
     }
 
@@ -107,8 +108,8 @@ public:
         Acell_  = 0.6;
         Urev_   = 1.2281701818935586;
         Tel_    = 88;
-        I_      = 0.0;
-        U_      = 0.0;
+        I_      = 50.0;
+        U_      = 1.45;
     }
 
 private:
@@ -157,14 +158,14 @@ TEST_CASE("basic") {
     while (t < 10) {
         instance->do_step(t, dt);
 
-        REQUIRE(U->get() >= 0);
+        REQUIRE(U->get() > 0);
 
         t += dt;
     }
 
     instance->reset();
 
-    REQUIRE(I->get() == 0);
+    REQUIRE(I->get() > 0);
 
     instance->terminate();
 }

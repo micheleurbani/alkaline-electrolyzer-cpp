@@ -91,10 +91,11 @@ public:
         double Urev = get_real_variable("Urev")->get();
         double Tel = get_real_variable("Tel")->get();
         double s = get_real_variable("s")->get();
+        double I = get_real_variable("I")->get();
 
-        double I = currentTime * 6;
         double U = Urev + (r1 + r2 * Tel) / Acell * I + s * std::log((t1 + t2 / Tel + t3 / std::pow(Tel, 2)) / Acell * I + 1);
         std::cout << "U: " << U << std::endl;
+        get_real_variable("U")->set(U);
         return true;
     }
 
