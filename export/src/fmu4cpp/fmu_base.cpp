@@ -196,7 +196,7 @@ namespace fmu4cpp {
         if (!outputs.empty()) {
             ss << "\t\t<Outputs>\n";
             for (const auto &v: outputs) {
-                ss << "\t\t\t<Unknown index=\"" << v.index() << "\"";
+                ss << "\t\t\t<Unknown index=\"" << v.index() + 1 << "\"";
                 auto deps = v.getDependencies();
                 if (!deps.empty()) {
                     ss << " dependencies=\"";
@@ -211,6 +211,26 @@ namespace fmu4cpp {
                 ss << "/>\n";
             }
             ss << "\t\t</Outputs>\n";
+        }
+
+        if (!outputs.empty()) {
+            ss << "\t\t<InitialUnknowns>\n";
+            for (const auto &v: outputs) {
+                ss << "\t\t\t<Unknown index=\"" << v.index() + 1 << "\"";
+                auto deps = v.getDependencies();
+                if (!deps.empty()) {
+                    ss << " dependencies=\"";
+                    for (unsigned i = 0; i < deps.size(); i++) {
+                        ss << deps[i];
+                        if (i != deps.size() - 1) {
+                            ss << " ";
+                        }
+                    }
+                    ss << "\"";
+                }
+                ss << "/>\n";
+            }
+            ss << "\t\t</InitialUnknowns>\n";
         }
 
         ss << "\t</ModelStructure>\n";
