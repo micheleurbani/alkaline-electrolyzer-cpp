@@ -7,6 +7,8 @@
 #include <cmath>
 #include <utility>
 
+using namespace fmu4cpp;
+
 class Model : public fmu4cpp::fmu_base {
 
 public:
