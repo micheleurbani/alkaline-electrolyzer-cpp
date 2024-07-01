@@ -3,6 +3,9 @@
 #include <catch2/catch.hpp>
 
 #include <fmu4cpp/fmu_base.hpp>
+#include <iostream>
+#include <cmath>
+#include <utility>
 
 class Model : public fmu4cpp::fmu_base {
 
