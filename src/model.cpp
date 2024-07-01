@@ -128,7 +128,7 @@ private:
 
 model_info fmu4cpp::get_model_info() {
     model_info info;
-    info.modelName = "Alkaline Electrolyzer";
+    info.modelName = "Alkaline_Electrolyzer";
     info.description = "A simple alkaline electrolyzer model.";
     info.modelIdentifier = FMU4CPP_MODEL_IDENTIFIER;
     return info;
