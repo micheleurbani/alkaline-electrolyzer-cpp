@@ -4,53 +4,131 @@
 
 #include <fmu4cpp/fmu_base.hpp>
 
-class Model : public fmu4cpp::fmu_base {
+class Model : public fmu_base {
 
 public:
     Model(const std::string &instanceName, const std::string &resources)
-        : fmu4cpp::fmu_base(instanceName, resources) {
+        : fmu_base(instanceName, resources) {
 
-        register_variable(real("myReal", [this] { return real_; })
-                                  .setCausality(fmu4cpp::causality_t::OUTPUT));
-        register_variable(integer("myInteger", [this] { return integer_; })
-                                  .setCausality(fmu4cpp::causality_t::OUTPUT));
-        register_variable(boolean("myBoolean", [this] { return boolean_; })
-                                  .setCausality(fmu4cpp::causality_t::OUTPUT));
-        register_variable(string("myString", [this] { return str_; })
-                                  .setCausality(fmu4cpp::causality_t::OUTPUT));
+        register_variable(
+            real(
+                "r1", [this] { return r1_; }, [this](double value) { r1_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable(
+            real(
+                "r2", [this] { return r2_; }, [this](double value) { r2_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable(
+            real(
+                "t1", [this] { return t1_; }, [this](double value) { t1_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable(
+            real(
+                "t2", [this] { return t2_; }, [this](double value) { t2_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable( real(
+                "t3", [this] { return t3_; }, [this](double value) { t3_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable( real(
+                "Acell", [this] { return Acell_; }, [this](double value) { Acell_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable( real(
+                "Urev", [this] { return Urev_; }, [this](double value) { Urev_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable( real(
+                "Tel", [this] { return Tel_; }, [this](double value) { Tel_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable( real(
+                "s", [this] { return s_; }, [this](double value) { s_ = value; })
+                .setCausality(causality_t::PARAMETER)
+                .setVariability(variability_t::FIXED));
+
+        register_variable(
+            real(
+                "I", [this] { return I_; }, [this](double value) { I_ = value; })
+                .setCausality(causality_t::INPUT)
+                .setVariability(variability_t::DISCRETE));
+
+        register_variable(
+            real(
+                "U", [this] { return U_; })
+                .setCausality(causality_t::OUTPUT)
+                .setVariability(variability_t::DISCRETE)
+                .setDependencies({get_real_variable("I")->index()}));
 
         Model::reset();
     }
 
     bool do_step(double currentTime, double dt) override {
-        real_ = currentTime;
-        ++integer_;
-        boolean_ = !boolean_;
-        str_ = std::to_string(integer_);
+        double r1 = get_real_variable("r1")->get();
+        double r2 = get_real_variable("r2")->get();
+        double t1 = get_real_variable("t1")->get();
+        double t2 = get_real_variable("t2")->get();
+        double t3 = get_real_variable("t3")->get();
+        double Acell = get_real_variable("Acell")->get();
+        double Urev = get_real_variable("Urev")->get();
+        double Tel = get_real_variable("Tel")->get();
+        double s = get_real_variable("s")->get();
+
+        double I = currentTime * 6;
+        double U = Urev + (r1 + r2 * Tel) / Acell * I + s * std::log((t1 + t2 / Tel + t3 / std::pow(Tel, 2)) / Acell * I + 1);
+        std::cout << "U: " << U << std::endl;
         return true;
     }
 
     void reset() override {
-        boolean_ = false;
-        integer_ = 0;
-        real_ = 0;
-        str_ = "0";
+        r1_     = 2.031208241179847e-05;
+        r2_     = 1.274797205640144e-08;
+        t1_     = 1.9889752425169336;
+        t2_     = 2.370768719711065;
+        t3_     = 16.874083460526798;
+        s_      = 0.041119229477905195;
+        Acell_  = 0.6;
+        Urev_   = 1.2281701818935586;
+        Tel_    = 88;
+        I_      = 0.0;
+        U_      = 0.0;
     }
 
 private:
-    bool boolean_;
-    int integer_;
-    double real_;
-    std::string str_;
+    double r1_;
+    double r2_;
+    double t1_;
+    double t2_;
+    double t3_;
+    double Acell_;
+    double Urev_;
+    double Tel_;
+    double s_;
+    double I_;
+    double U_;
 };
 
-fmu4cpp::model_info fmu4cpp::get_model_info() {
-    fmu4cpp::model_info m;
-    m.modelIdentifier = FMU4CPP_MODEL_IDENTIFIER;
-    return m;
+model_info fmu4cpp::get_model_info() {
+    model_info info;
+    info.modelName = "Alkaline Electrolyzer";
+    info.description = "A simple alkaline electrolyzer model.";
+    info.modelIdentifier = FMU4CPP_MODEL_IDENTIFIER;
+    return info;
 }
 
-std::unique_ptr<fmu4cpp::fmu_base> fmu4cpp::createInstance(const std::string &instanceName, const std::string &fmuResourceLocation) {
+std::unique_ptr<fmu_base> fmu4cpp::createInstance(const std::string &instanceName, const std::string &fmuResourceLocation) {
     return std::make_unique<Model>(instanceName, fmuResourceLocation);
 }
 
@@ -61,14 +139,10 @@ TEST_CASE("basic") {
     double t = 0;
     double dt = 0.1;
 
-    auto real = instance->get_real_variable("myReal");
-    REQUIRE(real);
-    auto integer = instance->get_int_variable("myInteger");
-    REQUIRE(integer);
-    auto boolean = instance->get_bool_variable("myBoolean");
-    REQUIRE(boolean);
-    auto str = instance->get_string_variable("myString");
-    REQUIRE(str);
+    auto I = instance->get_real_variable("I");
+    REQUIRE(I);
+    auto U = instance->get_real_variable("U");
+    REQUIRE(U);
 
     instance->setup_experiment(t, {}, {});
     instance->enter_initialisation_mode();
@@ -78,20 +152,14 @@ TEST_CASE("basic") {
     while (t < 10) {
         instance->do_step(t, dt);
 
-        REQUIRE(real->get() == Approx(t));
-        REQUIRE(boolean->get() == (i % 2 == 0));
-        REQUIRE(integer->get() == ++i);
-        REQUIRE(str->get() == std::to_string(i));
+        REQUIRE(U->get() > 0);
 
         t += dt;
     }
 
     instance->reset();
 
-    REQUIRE(real->get() == 0);
-    REQUIRE(boolean->get() == false);
-    REQUIRE(integer->get() == 0);
-    REQUIRE(str->get() == "0");
+    REQUIRE(I->get() != 0);
 
     instance->terminate();
 }

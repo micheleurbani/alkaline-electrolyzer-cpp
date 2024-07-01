@@ -1,28 +1,31 @@
 # FMU4cpp (early prototype)
 
-FMU4cpp is a CMake template repository that allows you to easily create cross-platform FMUs 
-compatible with [FMI 2.0](https://fmi-standard.org/downloads/) for Co-simulation using C++.
+## Get started
 
-The framework generates the required `modelDescription.xml` and further packages 
-the necessary content into a ready-to-use FMU archive.
+Build Docker image to have a vanilla Ubuntu 20.04 installation with glibc6, cmake and g++.
 
-### How do I get started?
+```bash
+docker build -t alkaline .
+```
 
-1. Change the value of the `modelIdentifier` variable in `CMakeLists.txt` to something more appropriate.
-2. Edit the content of [model.cpp](src/model.cpp).
-3. Build.
+Then run a docker container and copy the FMU locally. The following is a
+for the CLI instruction
 
-An FMU named `<modelIdentifier>.fmu` is now located in your build folder.
+```bash
+docker run -it --name FMUgenerator alkaline
+```
 
+If you launch the container twice, remember to remove the old one.
 
-#### Cross-compilation
+```bash
+docker rm FMUgenerator
+```
 
-Cross-compilation (64-bit linux/windows) occurs automatically when you push your changes to GitHub. 
-Simply rename the produced `model.zip` to `<modelName>.fmu`.
+When the container is running, copy the FMU locally.
 
-
-Such easy, such wow.
-
+```bash
+docker cp FMUgenerator:/app/build/alkalineElectrolyzer.fmu
+```
 
 ### Requirements
 * C++17 compiler

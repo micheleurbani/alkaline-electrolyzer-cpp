@@ -65,7 +65,8 @@ public:
                 .setCausality(causality_t::PARAMETER)
                 .setVariability(variability_t::FIXED));
 
-        register_variable( real(
+        register_variable(
+            real(
                 "I", [this] { return I_; }, [this](double value) { I_ = value; })
                 .setCausality(causality_t::INPUT)
                 .setVariability(variability_t::DISCRETE));
