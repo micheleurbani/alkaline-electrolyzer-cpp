@@ -4,7 +4,7 @@
 
 #include <fmu4cpp/fmu_base.hpp>
 
-class Model : public fmu_base {
+class Model : public fmu4cpp::fmu_base {
 
 public:
     Model(const std::string &instanceName, const std::string &resources)
