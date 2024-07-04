@@ -95,7 +95,7 @@ public:
 
         double U = Urev + (r1 + r2 * Tel) / Acell * I + s * std::log((t1 + t2 / Tel + t3 / std::pow(Tel, 2)) / Acell * I + 1);
         std::cout << "U: " << U << std::endl;
-        get_real_variable("U")->set(U);
+        U_ = U;
         return true;
     }
 
