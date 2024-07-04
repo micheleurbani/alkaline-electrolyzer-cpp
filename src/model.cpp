@@ -69,13 +69,13 @@ public:
             real(
                 "I", [this] { return I_; }, [this](double value) { I_ = value; })
                 .setCausality(causality_t::INPUT)
-                .setVariability(variability_t::DISCRETE));
+                .setVariability(variability_t::CONTINUOUS));
 
         register_variable(
             real(
                 "U", [this] { return U_; })
                 .setCausality(causality_t::OUTPUT)
-                .setVariability(variability_t::DISCRETE)
+                .setVariability(variability_t::CONTINUOUS)
                 .setDependencies({get_real_variable("I")->index()}));
 
         Model::reset();
